@@ -2,6 +2,7 @@ import express from 'express';
 import usuarios from './routes/usuariosRoutes.js';
 import connectData from './database/dbConfig.js';
 import produtos from './routes/productsRoutes.js';
+import auth from './routes/authRoutes.js'
 
 const connect = await connectData();
 
@@ -16,6 +17,7 @@ connect.once("open", () => {
 const app = express();
 app.use(express.json());
 app.use('/usuario', usuarios);
-app.use('/produtos', produtos)
+app.use('/produtos', produtos);
+app.use('/auth', auth);
 
 export default app;

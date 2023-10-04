@@ -3,7 +3,7 @@ import { hash } from 'bcrypt';
 
 class usuarioController {
     static async getAll (req, res) {
-        let all = await usuarioModel.find()
+        let all = await usuarioModel.find().select('_id nome email role')
 
         res.json(all);
     }
@@ -28,6 +28,14 @@ class usuarioController {
         
         try {
 
+            const emailExist = await usuarioModel.findOne({ email: req.body.email });
+
+            if (emailExist) {
+                return res.status(404).json({ mensagem: 'Email já existente'});
+            }
+
+            
+
             const newUser = await usuarioModel.create({
                 nome : req.body.nome,
                 email: req.body.email,
@@ -35,7 +43,7 @@ class usuarioController {
                 role : req.body.role
             });
             
-            res.status(201).json({mensagem : "criado com sucesso", user: newUser});
+            res.status(201).json({mensagem : "criado com sucesso", user: newUser, test : emailExist});
         } catch (error) {
             res.status(500).json({ mensagem: `Erro interno do servidor -- ${error}`});
         }      
